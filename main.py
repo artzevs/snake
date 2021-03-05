@@ -16,7 +16,9 @@ class Snake:
 
     def move_snake(self):
         body_copy = self.body[:-1]
-        body_copy.insert(0, body_copy[0] + self.direction)
+        head_position = Vector2((body_copy[0].x + self.direction.x) % cell_number,
+                                (body_copy[0].y + self.direction.y) % cell_number)
+        body_copy.insert(0, head_position)
         self.body = body_copy
 
     def add_block(self):
@@ -45,13 +47,13 @@ class Main:
 
     def update(self):
         self.snake.move_snake()
-        self.check_collistion()
+        self.check_collision()
 
     def draw_elements(self):
         self.fruit.draw_fruit()
         self.snake.draw_snake()
 
-    def check_collistion(self):
+    def check_collision(self):
         if self.fruit.position == self.snake.body[0]:
             self.snake.add_block()
             self.fruit.new_fruit()
@@ -62,8 +64,11 @@ pygame.init()
 cell_size = 40
 cell_number = 20
 
+
 screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_size))
 clock = pygame.time.Clock()
+
+
 
 main_game = Main()
 
