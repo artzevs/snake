@@ -1,2 +1,0 @@
-event 2 - 'git fetch origin' 
-event 1 - 'git fetch origin' 
