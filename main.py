@@ -3,12 +3,11 @@ import sys, os, random
 from pygame.math import Vector2
 
 
-
 class Snake:
     def __init__(self):
         self.body = []
         for i in range(3):
-            self.body.append(Vector2(cell_number/2-i, cell_number/2))
+            self.body.append(Vector2(cell_number / 2 - i, cell_number / 2))
         self.direction = Vector2(1, 0)
 
     def draw_snake(self):
@@ -32,20 +31,20 @@ class Snake:
 
 class Fruit:
     def __init__(self):
-        self.new_fruit()
-
-    def draw_fruit(self):
-        fruit_rect = pygame.Rect(self.position.x * cell_size, self.position.y * cell_size,
-                                 cell_size, cell_size)
-        pygame.draw.rect(screen, pygame.Color('Red'), fruit_rect)
-
-    def new_fruit(self):
         self.x = random.randint(0, cell_number - 1)
         self.y = random.randint(0, cell_number - 1)
         self.position = Vector2(self.x, self.y)
 
+    def draw_fruit(self):
+        fruit_rect = pygame.Rect(self.position.x * cell_size, self.position.y * cell_size,
+                                 cell_size, cell_size)
+        screen.blit(corgi, fruit_rect)
+        # pygame.draw.rect(screen, pygame.Color('Red'), fruit_rect)
+
 
 class Main:
+    """Logic of the game"""
+
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
@@ -62,7 +61,9 @@ class Main:
     def check_fruit_collision(self):
         if self.fruit.position == self.snake.body[0]:
             self.snake.add_block()
-            self.fruit.new_fruit()
+            self.fruit = Fruit()
+        if self.fruit.position in self.snake.body:
+            self.fruit = Fruit()
 
     def check_snake_collision(self):
         if self.snake.body[0] in self.snake.body[1:]:
@@ -81,6 +82,9 @@ direction_right = Vector2(1, 0)
 
 screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_size))
 clock = pygame.time.Clock()
+
+corgi = pygame.image.load('fruit(corgi).png').convert_alpha()
+corgi = pygame.transform.scale(corgi, (cell_size + 4, cell_size + 4))
 
 main_game = Main()
 
