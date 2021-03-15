@@ -11,10 +11,16 @@ class Snake:
         self.direction = Vector2(1, 0)
 
     def draw_snake(self):
-        for block in self.body:
+        head = self.body[0]
+        head_rect = pygame.Rect(head.x * cell_size, head.y * cell_size,
+                                cell_size, cell_size)
+        pygame.draw.rect(screen, pygame.Color('Green'), head_rect)
+        # screen.blit(corgi, head_rect)
+        for block in self.body[1:]:
             block_rect = pygame.Rect(block.x * cell_size, block.y * cell_size,
                                      cell_size, cell_size)
-            pygame.draw.rect(screen, pygame.Color('Green'), block_rect)
+            # pygame.draw.rect(screen, pygame.Color('Green'), block_rect)
+            screen.blit(corgi, block_rect)
 
     def move_snake(self):
         """movement of each block of snake"""
@@ -54,9 +60,11 @@ class Main:
         self.check_fruit_collision()
         self.check_snake_collision()
 
+
     def draw_elements(self):
         self.fruit.draw_fruit()
         self.snake.draw_snake()
+        self.draw_score()
 
     def check_fruit_collision(self):
         if self.fruit.position == self.snake.body[0]:
@@ -69,6 +77,13 @@ class Main:
         if self.snake.body[0] in self.snake.body[1:]:
             self.snake = Snake()
 
+    def draw_score(self):
+        score_text = str(len(self.snake.body) - 3)
+        score_surface = game_font.render(score_text, True, pygame.Color('black'))
+        score_position = (cell_size * cell_number - 60, cell_size * 2 - 40)
+        score_rect = score_surface.get_rect(center=(score_position))
+        screen.blit(score_surface, score_rect)
+
 
 pygame.init()
 
@@ -80,6 +95,8 @@ direction_down = Vector2(0, 1)
 direction_left = Vector2(-1, 0)
 direction_right = Vector2(1, 0)
 
+game_font = pygame.font.Font('20179.ttf', 50)
+
 screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_size))
 clock = pygame.time.Clock()
 
@@ -89,7 +106,7 @@ corgi = pygame.transform.scale(corgi, (cell_size + 4, cell_size + 4))
 main_game = Main()
 
 SCREEN_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(SCREEN_UPDATE, 100)
+pygame.time.set_timer(SCREEN_UPDATE, 150)
 
 while 1:
     for event in pygame.event.get():
